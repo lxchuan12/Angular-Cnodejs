@@ -19,36 +19,11 @@
 		<div id="app" ng-controller="appCtrl" >
 			<!-- 头部 -->
 			<header id="head" class="ui-header ui-header-positive ui-border-b">
-				<i class="ui-icon-return" ng-click="return()" ng-if="isOpen"></i>			
-				<h1 ng-if="!isOpen">全部</h1>
-				<h1 ng-if="isOpen">主题</h1>
-			</header>
-			<!-- 首页列表 -->
-			<section id="list" class="ui-container" ng-if="!isOpen">				
-				<ul class="ui-list ui-list-link ui-border-tb ui-list-active">
-					<li class="ui-border-t" ng-click="open(list)" ng-repeat="list in lists">
-						<div class="ui-avatar">
-							<span style="background-image:url({{list.author.avatar_url}})"></span>
-						</div>
-						<div class="ui-list-info">
-							<h4 class="ui-nowrap">{{list.title}}</h4>
-							<p>
-								<span ng-if="list.top" class="ui-badge">置顶</span>
-                				<span ng-if="list.good" class="ui-badge">精华</span>
-                				<span class="ui-badge-muted">{{list.reply_count}}/{{list.visit_count}}</span>
-							</p>
-							<p>								
-								<span>{{list.author.loginname}}</span>
-								<span class="date" ng-bind="list.valueOf().last_reply_at | date:'short'"></span>
-							</p>
-						</div>
-
-					</li>
-					
-				</ul>
-			</section>
+				<i class="ui-icon-return" ng-click="return()"></i>	
+				<h1>主题</h1>
+			</header>			
 			<!-- 内容 -->
-			<section class="ui-container" ng-if="isOpen">
+			<section class="ui-container">
 				<ul class="ui-list ui-list-link ui-border-tb ui-list-active">
 					<li class="ui-border-t">
 						<div class="ui-avatar">
@@ -86,8 +61,7 @@
 		                    </li>		                    
 		                </ul>
 					</section>
-				</ul>
-				
+				</ul>				
 			</section>			
 		</div>
 	</body>
