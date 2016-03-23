@@ -10,11 +10,13 @@
 		<link rel="stylesheet" type="text/css" href="./src/css/frozen.css">		
 		<link rel="stylesheet" type="text/css" href="./src/css/github-markdown.css">
 		<script src="./src/js/zepto.min.js"></script>
+		<script src="./src/js/jquery-1.12.2.min.js"></script>
 		<script src="./src/js/angular.min.js"></script>
 		<script src="./src/js/angular-route.min.js"></script>
 		<script src="./src/js/highlight.pack.js"></script>
 		<script src="./src/js/index.js"></script>
-		<script src="./src/js/frozen.js"></script>		
+		<script src="./src/js/frozen.js"></script>
+		<script src="./src/js/ng-infinite-scroll.js"></script>	
 	</head>
 	<body>
 		<div id="app">
@@ -28,8 +30,8 @@
 			<!-- 首页列表 -->
 			<script type="text/ng-template" id="index.html">				
 				<section class="ui-container">				
-					<ul class="ui-list ui-list-link ui-border-tb ui-list-active">
-						<li class="ui-border-t" ng-click="toTopic(list.id)" ng-repeat="list in lists">
+					<ul class="ui-list ui-list-link ui-border-tb ui-list-active" infinite-scroll='topics.nextPage()' infinite-scroll-disabled='topics.busy' infinite-scroll-distance="2">
+						<li class="ui-border-t" ng-click="toTopic(list.id)" ng-repeat="list in topics.lists">
 							<div class="ui-avatar">
 								<span style="background-image:url({{list.author.avatar_url}})"></span>
 							</div>
@@ -48,6 +50,7 @@
 						</li>
 						
 					</ul>
+					<div ng-show='topics.busy'>Loading data...</div>
 				</section>
 			</script>
 			<!-- 内容页 -->

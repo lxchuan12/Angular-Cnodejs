@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngRoute']);
+var app = angular.module('app', ['ngRoute','infinite-scroll']);
 function routeConfig($routeProvider){
 	$routeProvider
 	.when('/',{controller:'IndexController',templateUrl:'index.html'})
@@ -8,27 +8,6 @@ function routeConfig($routeProvider){
 	.otherwise({redirectTo:'/'});
 };
 app.config(routeConfig);
-app.directive("scroll",  ["$window", "$document",function ($window, $document) {
-    return function(scope, element) {
-        angular.element($window).bind("scroll", function() {
-            var pageYOffset = $window.pageYOffset;
-            var clientHeight = $document[0].documentElement.clientHeight;
-            var offsetHeight = $document[0].body.offsetHeight;
-            //当滚动到90%的时候去加载
-            if(pageYOffset+clientHeight>offsetHeight*0.9)
-            {
-
-                //scope.shopWorkCanLoad是否可加载,controller中定义
-                //scope.shopWorkOnLoad是否正在加载,controller中定义
-                if(scope.shopWorkCanLoad==true && scope.shopWorkOnLoad==false){
-                    //加载数据,controller中定义
-                    scope.loadShopWork();//
-                }
-            }
-        });
-    };
-}]);
-
 app.controller('IndexController',function($scope,$http,$sce,$location){
 	$scope.trustAsHtml = function (str) {
 		var _str  = angular.element(str);
@@ -39,19 +18,34 @@ app.controller('IndexController',function($scope,$http,$sce,$location){
 		var html = _str[0] ? _str[0].innerHTML : null;
 		return $sce.trustAsHtml(html);
 	};
-   
-	function init(){
-		$http({
-			url: 'https://cnodejs.org/api/v1/topics',
-			cache: true
-		}).success(function (response) {
-			//console.log(response.data);
-			$scope.lists = response.data;
-		});
-		$scope.back=false;
-		
-	}	
-	init();
+	
+	//创建后台数据交互工厂
+	var Topics=function(){
+		this.lists=[];
+		this.busy=false;
+		this.page=2;
+	};
+	Topics.prototype.nextPage=function(){
+		//console.log('1');
+		if(this.busy) return;
+		this.busy=true;		
+		var url='https://cnodejs.org/api/v1/topics?limit=10&page='+this.page;
+		//console.log(url);
+		$http.get(url).success(function(response){
+			//console.log('2');
+			//console.log(response);
+			var lists = response.data;
+			//console.log(lists);
+			for(var i=0;i<lists.length;i++){
+				this.lists.push(lists[i]);
+			}
+			//console.log(this.lists);
+			this.busy=false;
+			this.page+=1;
+		}.bind(this));		
+	};
+	$scope.back=false;
+	$scope.topics=new Topics();
 	$scope.toTopic=function(id){
 		$location.path('topic/'+id);
 	}
@@ -59,6 +53,8 @@ app.controller('IndexController',function($scope,$http,$sce,$location){
 		$location.path('about');
 	}
 })
+
+
 app.controller('TopicController',function($scope,$http,$routeParams,$sce,$location){
 	$scope.trustAsHtml = function (str) {
 		var _str  = angular.element(str);
