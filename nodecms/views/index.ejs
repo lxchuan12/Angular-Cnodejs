@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>个人中心</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h3>用户中心</h3>
+    <% if(typeof(User)!=='undefined'&&User) {%>
+		欢迎你--<%=User.user_name%><br/><br/>
+		<a href="/logout">退出</a><br/>
+	<% }else{ %>
+		<a href="/login">登录</a><br/><br/>
+		<a href="/register">注册</a><br/>
+	<% } %>
+  </body>
+</html>
